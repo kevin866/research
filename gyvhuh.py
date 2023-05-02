@@ -1,20 +1,30 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Examples for the NURBS-Python Package
+    Released under MIT License
+    Developed by Onur Rauf Bingol (c) 2019
+"""
+
 from geomdl import BSpline
 from geomdl import CPGen
-from geomdl import multi
 from geomdl import utilities
 from geomdl import construct
-from geomdl.visualization import VisVTK
+from geomdl import operations
+from geomdl.visualization import VisMPL as vis
+
 
 # Generate control points grid for Surface #1
 sg01 = CPGen.Grid(15, 10, z_value=0.0)
-sg01.generate(8, 8)
+sg01.generate(8, 10)
 
 # Create a BSpline surface instance
 surf01 = BSpline.Surface()
 
 # Set degrees
-surf01.degree_u = 1
-surf01.degree_v = 1
+surf01.degree_u = 2
+surf01.degree_v = 3
 
 # Get the control points from the generated grid
 surf01.ctrlpts2d = sg01.grid
@@ -25,14 +35,14 @@ surf01.knotvector_v = utilities.generate_knot_vector(surf01.degree_v, surf01.ctr
 
 # Generate control points grid for Surface #2
 sg02 = CPGen.Grid(15, 10, z_value=1.0)
-sg02.generate(8, 8)
+sg02.generate(8, 10)
 
 # Create a BSpline surface instance
 surf02 = BSpline.Surface()
 
 # Set degrees
-surf02.degree_u = 1
-surf02.degree_v = 1
+surf02.degree_u = 2
+surf02.degree_v = 3
 
 # Get the control points from the generated grid
 surf02.ctrlpts2d = sg02.grid
@@ -43,14 +53,14 @@ surf02.knotvector_v = utilities.generate_knot_vector(surf02.degree_v, surf02.ctr
 
 # Generate control points grid for Surface #3
 sg03 = CPGen.Grid(15, 10, z_value=2.0)
-sg03.generate(8, 8)
+sg03.generate(8, 10)
 
 # Create a BSpline surface instance
 surf03 = BSpline.Surface()
 
 # Set degrees
-surf03.degree_u = 1
-surf03.degree_v = 1
+surf03.degree_u = 2
+surf03.degree_v = 3
 
 # Get the control points from the generated grid
 surf03.ctrlpts2d = sg03.grid
@@ -59,14 +69,37 @@ surf03.ctrlpts2d = sg03.grid
 surf03.knotvector_u = utilities.generate_knot_vector(surf03.degree_u, surf03.ctrlpts_size_u)
 surf03.knotvector_v = utilities.generate_knot_vector(surf03.degree_v, surf03.ctrlpts_size_v)
 
-# Construct the parametric volume
-pvolume = construct.construct_volume('w', surf01, surf02, surf03, degree=1)
+# Generate control points grid for Surface #4
+sg04 = CPGen.Grid(15, 10, z_value=3.0)
+sg04.generate(8, 10)
 
-# Construct the isosurface
-surfiso = construct.extract_isosurface(pvolume)
-msurf = multi.SurfaceContainer(surfiso)
+# Create a BSpline surface instance
+surf04 = BSpline.Surface()
 
-# Render the isourface
-msurf.vis = VisVTK.VisSurface(VisVTK.VisConfig(ctrlpts=False, legend=False))
-msurf.delta = 0.05
-msurf.render(evalcolor=["skyblue", "cadetblue", "crimson", "crimson", "crimson", "crimson"])
+# Set degrees
+surf04.degree_u = 2
+surf04.degree_v = 3
+
+# Get the control points from the generated grid
+surf04.ctrlpts2d = sg04.grid
+
+# Set knot vectors
+surf04.knotvector_u = utilities.generate_knot_vector(surf04.degree_u, surf04.ctrlpts_size_u)
+surf04.knotvector_v = utilities.generate_knot_vector(surf04.degree_v, surf04.ctrlpts_size_v)
+
+
+# Construct the parametric volume with a uniform knot vector
+pvolume = construct.construct_volume('w', surf01, surf02, surf03, surf04, degree=2)
+
+# Visualize volume
+pvolume.vis = vis.VisVolume(vis.VisConfig(ctrlpts=True, evalpts=False))
+pvolume.render()
+
+# Knot vector refinement
+operations.refine_knotvector(pvolume, [1, 1, 1])
+
+# Visualize volume after knot insertions
+pvolume.render()
+
+# Good to have something here to put a breakpoint
+pass
