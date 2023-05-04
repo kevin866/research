@@ -15,6 +15,9 @@ ctrlpts = [
     [[15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0], [15.0, 15.0, -4.0], [15.0, 25.0, -8.0]],
     [[25.0, -25.0, -10.0], [25.0, -15.0, -5.0], [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
 ]
+print(len(ctrlpts))
+print(len(ctrlpts[0]))
+print(len(ctrlpts[0][0]))
 
 # Generate control points grid for Surface #1
 sg01 = CPGen.Grid(15, 10, z_value=10.0)
@@ -28,7 +31,8 @@ surf01.degree_v = 3
 
 # Get the control points from the generated grid
 surf01.ctrlpts2d = compatibility.generate_ctrlptsw2d(ctrlpts)
-
+print(surf01.ctrlpts_size_u)
+print(surf01.ctrlpts_size_v)
 # Set knot vectors
 surf01.knotvector_u = utilities.generate_knot_vector(surf01.degree_u, surf01.ctrlpts_size_u)
 surf01.knotvector_v = utilities.generate_knot_vector(surf01.degree_v, surf01.ctrlpts_size_v)
