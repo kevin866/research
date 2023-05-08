@@ -3,7 +3,7 @@ from geomdl import BSpline
 from geomdl.visualization import VisVTK
 from geomdl import utilities
 def random_digits(x, y, z):
-    return [[[float(randint(0, 100)) for k in range(x)] for j in range(y)] for i in range(z)]
+    return [[[float(randint(0, 100)) for _ in range(x)] for _ in range(y)] for _ in range(z)]
 
 
 def generate_surface(ctrlpts, degree_u, degree_v):
