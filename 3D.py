@@ -1,24 +1,20 @@
 from geomdl import BSpline
-import tools
 from geomdl import multi
 
 from geomdl import BSpline
-from geomdl import CPGen
 from geomdl import utilities
 from geomdl import construct
-from geomdl import operations
 from geomdl.visualization import VisVTK as vis
 from random import randint
-from volume_generator import Sphere
 #sha = Sphere()
 #sha.evaluate()
 # Create a 3-dimensional B-spline Curve
 curve = BSpline.Volume()
 
 # Set degree
-curve.degree_u = 7
-curve.degree_v = 7
-curve.degree_w = 7
+curve.degree_u = 3
+curve.degree_v = 3
+curve.degree_w = 3
 curve.ctrlpts_size_u=8
 curve.ctrlpts_size_v=8
 curve.ctrlpts_size_w=8

@@ -5,8 +5,8 @@ import geomdl.shapes
 import geomdl.utilities
 #geomdl.utilities.color_generator
 #geomdl.shapes.volume.scordelis_lo(ra)
-from volume_generator import Sphere
-sha = Sphere()
-sha.evaluate()
-print(len(sha.data['points']))
-
+#from volume_generator import Sphere
+#sha = Sphere()
+#sha.evaluate()
+#print(len(sha.data['points']))
+tools.generate_volume(8,8,8,3,3,3,20)
