@@ -9,4 +9,4 @@ import geomdl.utilities
 #sha = Sphere()
 #sha.evaluate()
 #print(len(sha.data['points']))
-tools.generate_volume(8,8,8,3,3,3,20)
+tools.generate_volume(8,8,8,3,3,3,0)

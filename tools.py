@@ -55,7 +55,8 @@ def generate_volume(u_size,v_size,z_size, degree_u, degree_v, degree_w, offset):
     vol.ctrlpts_size_w=z_size
     # Set control points
     #
-    vol.ctrlpts = [[float(randint(0, 100)) for _ in range(3)] for _ in range(u_size*v_size*z_size)]
+    vol.ctrlpts = [[float(randint(0, 10))-50.0 for _ in range(3)] for _ in range(u_size*v_size*z_size)]+[[float(randint(0, 10))+50.0 for _ in range(3)] for _ in range(u_size*v_size*z_size)]
+    #print(vol.ctrlpts)
     #curve.ctrlpts = tools.random_digits(3,6,6)
     #tools.random_digits(3,6,6)
     #
@@ -83,7 +84,7 @@ def generate_volume(u_size,v_size,z_size, degree_u, degree_v, degree_w, offset):
     # Voxelize the volume
     vol.vis = vis.VisVoxel(vis.VisConfig(ctrlpts_offset = offset))
 
-    #pvolume.render(evalcolor="firebrick", num_procs=16)
+    vol.render(evalcolor="firebrick", num_procs=16)
 
     # Extract the isosurface
     surfvol = construct.extract_isosurface(vol)
