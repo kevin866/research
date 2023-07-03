@@ -2,43 +2,46 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-# Define the radius and height of the cylindrical cross
-radius = 1.0
-height = 2.0
+# Define the control points for the cross-shaped geometry
+control_points = np.array([
+    [[0.0, 0.0, 0.0], [0.5, 0.0, 0.0], [1.0, 0.0, 0.0]],  # X-axis curve
+    [[1.0, 0.0, 0.0], [1.0, 0.0, 1.0], [1.0, 0.0, 2.0]],  # Z-axis curve
+    [[1.0, 0.0, 2.0], [0.5, 0.0, 2.0], [0.0, 0.0, 2.0]],  # -X-axis curve
+    [[0.0, 0.0, 2.0], [0.0, 0.0, 1.0], [0.0, 0.0, 0.0]],  # -Z-axis curve
+    [[0.0, 0.0, 0.0], [0.0, 0.5, 0.0], [0.0, 1.0, 0.0]],  # Y-axis curve
+    [[0.0, 1.0, 0.0], [0.0, 1.0, 1.0], [0.0, 1.0, 2.0]],  # -Y-axis curve
+])
 
-# Define the number of control points in each direction
-num_points = 5
+# Set up the parameter values for the Bezier curves
+t = np.linspace(0, 1, 100)
 
-# Generate control points for the x-direction
-x_control_points = np.zeros((num_points, 3))
-x_control_points[:, 0] = np.linspace(-radius, radius, num_points)
+# Generate the Bezier curves for each axis
+x_curve = np.zeros((100, 3))
+y_curve = np.zeros((100, 3))
+z_curve = np.zeros((100, 3))
 
-# Generate control points for the y-direction
-y_control_points = np.zeros((num_points, 3))
-y_control_points[:, 1] = np.linspace(-radius, radius, num_points)
+for i in range(3):
+    x_curve[:, i] = np.polyval(control_points[0, i], t)
+    y_curve[:, i] = np.polyval(control_points[4, i], t)
+    z_curve[:, i] = np.polyval(control_points[1, i], t)
 
-# Generate control points for the z-direction
-z_control_points = np.zeros((num_points, 3))
-z_control_points[:, 2] = np.linspace(0, height, num_points)
+# Create the surface by combining the Bezier curves
+surface = np.zeros((100, 100, 3))
+for i in range(100):
+    for j in range(100):
+        surface[i, j, :] = np.polyval(x_curve[i, :], t[j]), np.polyval(y_curve[i, :], t[j]), np.polyval(z_curve[i, :], t[j])
 
-# Combine the control points in all three directions
-control_points = np.concatenate((x_control_points, y_control_points, z_control_points), axis=0)
-print(control_points)
+# Extract the X, Y, and Z coordinates from the surface
+x = surface[:, :, 0]
+y = surface[:, :, 1]
+z = surface[:, :, 2]
 
-# Create a 3D scatter plot
+# Plot the surface and control points
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-
-# Plot the control points
-ax.scatter(control_points[:, 0], control_points[:, 1], control_points[:, 2], c='red', marker='o')
-
-# Set plot limits and labels
-ax.set_xlim(-radius, radius)
-ax.set_ylim(-radius, radius)
-ax.set_zlim(0, height)
+ax.plot_surface(x, y, z, alpha=0.5)
+ax.scatter(control_points[:, :, 0], control_points[:, :, 1], control_points[:, :, 2], c='r')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
-
-# Show the plot
 plt.show()

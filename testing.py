@@ -1,42 +1,51 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from scipy.interpolate import splprep, splev
+from scipy.interpolate import BSpline
 
-def bspline_cylinder(control_points, u_resolution=5, v_resolution=2, order=3):
-    u = np.linspace(0, 1, u_resolution)
-    v = np.linspace(0, 2 * np.pi, v_resolution)
-    U, V = np.meshgrid(v, u)
-    #print(U.shape)
-    n = len(control_points)
-    m = len(control_points[0])
+# Define the control points
+control_points = np.array([[0, 0, 0],
+                          [1, 0, 0],
+                          [1, 1, 0],
+                          [0, 1, 0],
+                          [0, 0, 1],
+                          [1, 0, 1],
+                          [1, 1, 1],
+                          [0, 1, 1],
+                          [0, 0, 0]])
 
-    X = np.zeros((u_resolution, v_resolution))
-    Y = np.zeros((u_resolution, v_resolution))
-    Z = np.zeros((u_resolution, v_resolution))
+# Create the B-spline surface
+knots = np.array([0, 0, 0, 1, 1, 1], dtype=np.float)
+degree = 2
+interp_surface = BSpline(knots, control_points.T, degree, axis=0)
 
-    for k in range(u_resolution):
-        for l in range(v_resolution):
-            for i in range(n):
-              tck, _ = splprep([p[i] for p in control_points], u=np.linspace(0, 1, m), k=order)
-              x, y = splev(U[k,l], tck)
-              X[k, l] += x * np.cos(V[k, l])
-              Y[k, l] += x * np.sin(V[k, l])
-              Z[k, l] += y
+# Generate the surface points
+u = np.linspace(0, 1, 20)  # Adjusted to match the desired resolution
+v = np.linspace(0, 1, 20)  # Adjusted to match the desired resolution
+u_grid, v_grid = np.meshgrid(u, v)
+uv = np.column_stack([u_grid.ravel(), v_grid.ravel()])
+surface_points = interp_surface(uv).T
 
-    return X, Y, Z
+# Reshape the surface points to match the grid dimensions
+surface_points = surface_points.reshape((60, 40, 3))
 
-# Define control points for the B-spline cylinder
-# Define control points for the B-spline cylinder
-control_points = [
-    [(1, 0, 0), (1, 0, 0), (1, 0, 0)],  # Control points for the upper circle
-    [(1, 0, 1), (1, 0, 1), (1, 0, 1)],  # Control points for the lower circle
-]
-# Generate the B-spline cylinder
-X, Y, Z = bspline_cylinder(control_points, order = 2)
-
-# Plot the B-spline cylinder
+# Plot the surface
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.plot_surface(X, Y, Z)
+ax.plot_surface(surface_points[:, :, 0],
+                surface_points[:, :, 1],
+                surface_points[:, :, 2],
+                cmap='viridis')
+ax.scatter(control_points[:, 0], control_points[:, 1], control_points[:, 2], c='r')
+
+
+
+# Set labels and title
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.set_title('Closed-Form B-Spline Surface')
+
+# Show the plot
 plt.show()
+
